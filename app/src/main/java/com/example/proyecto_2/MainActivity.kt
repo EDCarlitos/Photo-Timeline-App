@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import com.example.proyecto_2.ui.theme.Proyecto_2Theme
+import com.example.proyecto_2.ui.theme.screens.CameraScreen
 import com.example.proyecto_2.ui.theme.screens.GalleryScreen
 import com.example.proyecto_2.ui.theme.screens.HomeScreen
 
@@ -67,10 +68,10 @@ fun Proyecto_2App() {
                     HomeScreen(Modifier.padding(innerPadding))
                 }
                 AppDestinations.FAVORITES -> {
-                    GalleryScreen(Modifier.padding(innerPadding))
+                    CameraScreen(Modifier.padding(innerPadding))
                 }
                 AppDestinations.PROFILE -> {
-                    HomeScreen(Modifier.padding(innerPadding))
+                    GalleryScreen(Modifier.padding(innerPadding))
                 }
             }
         }
