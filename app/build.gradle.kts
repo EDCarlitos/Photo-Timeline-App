@@ -64,4 +64,11 @@ dependencies {
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${lifecycle_version}")
 
+
+    val cameraxVersion = "1.5.3"
+
+    implementation("androidx.camera:camera-core:$cameraxVersion")
+    implementation("androidx.camera:camera-camera2:$cameraxVersion")
+    implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
+    implementation("androidx.camera:camera-view:$cameraxVersion")
 }
