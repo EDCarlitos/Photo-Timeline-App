@@ -35,7 +35,7 @@ fun CameraPreview(
         factory = { previewView}
     )
 
-    LaunchedEffect(viewModel.cameraMode) {
+    LaunchedEffect(viewModel.cameraMode, viewModel.lensFacing) {
         camaraProviderFuture.addListener({
             val camaraProvider = camaraProviderFuture.get( )
 
@@ -43,11 +43,14 @@ fun CameraPreview(
                 it.setSurfaceProvider(previewView.surfaceProvider)
             };
 
+            val cameraSelector = CameraSelector.Builder()
+                .requireLensFacing(viewModel.lensFacing)
+                .build()
 
             camaraProvider.unbindAll();
             camaraProvider.bindToLifecycle(
                 lifecycleOwner = lifecycleOwner,
-                cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA,
+                cameraSelector = cameraSelector,
                 preview
             )
 
