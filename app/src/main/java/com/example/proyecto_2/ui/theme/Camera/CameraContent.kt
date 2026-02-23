@@ -1,13 +1,17 @@
 package com.example.proyecto_2.ui.theme.Camera
 
+import androidx.camera.core.ImageCapture
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.proyecto_2.services.camera.TakePhoto
 
 @Composable
 fun CameraContent(
@@ -20,10 +24,19 @@ fun CameraContent(
             return
         }
 
-        CameraPreview()
+
+        val context = LocalContext.current
+
+        var imageCapture = remember {
+            ImageCapture.Builder().build();
+        }
+
+        CameraPreview(context,imageCapture)
         CameraBottonControls(
+            onTakePhoto = { TakePhoto(imageCapture,context) },
             modifier = Modifier.fillMaxWidth()
                 .align(Alignment.BottomEnd),
+
 
         )
     }

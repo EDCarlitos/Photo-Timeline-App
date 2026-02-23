@@ -2,6 +2,7 @@ package com.example.proyecto_2.ui.theme.Camera
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -17,6 +18,7 @@ import com.example.proyecto_2.viewModel.Camara.CameraViewModel
 
 @Composable
 fun TakePhotoButton(
+    onTakePhoto: () -> Unit,
     viewModel: CameraViewModel = viewModel(),
     modifier: Modifier = Modifier) {
 
@@ -27,6 +29,7 @@ fun TakePhotoButton(
             .clip(CircleShape)
             .border(2.dp,Color.White, CircleShape)
             .background(Color.Transparent)
+            .clickable { onTakePhoto() }
     ) {
 
         Box(
@@ -44,5 +47,5 @@ fun TakePhotoButton(
 @Preview
 @Composable
 private fun prev() {
-    TakePhotoButton()
+    TakePhotoButton({})
 }

@@ -1,6 +1,8 @@
 package com.example.proyecto_2.ui.theme.Camera
 
+import android.content.Context
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -18,9 +20,11 @@ import com.example.proyecto_2.viewModel.Camara.CameraViewModel
 
 @Composable
 fun CameraPreview(
+    context: Context,
+    imageCapture: ImageCapture,
     viewModel: CameraViewModel = viewModel(),
     modifier: Modifier = Modifier) {
-    val context = LocalContext.current
+
     val lifecycleOwner = LocalLifecycleOwner.current
 
 
@@ -51,7 +55,8 @@ fun CameraPreview(
             camaraProvider.bindToLifecycle(
                 lifecycleOwner = lifecycleOwner,
                 cameraSelector = cameraSelector,
-                preview
+                preview,
+                imageCapture
             )
 
 
