@@ -25,7 +25,6 @@ fun TakePhoto(imageCapture: ImageCapture,
             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                 print(outputFileResults)
                 onTakenPhoto(photo);
-                Log.d("URI", outputFileResults.savedUri.toString())
             }
 
 

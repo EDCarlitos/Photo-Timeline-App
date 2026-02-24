@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.proyecto_2.services.camera.SaveImgageToGallery
 import com.example.proyecto_2.services.camera.TakePhoto
 import java.io.File
 
@@ -40,7 +41,10 @@ fun CameraContent(
         }
 
         if(photoFile != null){
-            PhotoPreview(photoFile as File)
+            PhotoPreview(photoFile as File, {
+                SaveImgageToGallery(context, photoFile!!)
+
+            })
         }else{
 
             CameraPreview(context,imageCapture)

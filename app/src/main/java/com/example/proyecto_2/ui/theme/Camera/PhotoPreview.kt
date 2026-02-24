@@ -41,6 +41,7 @@ import java.io.File
 @Composable
 fun PhotoPreview(
     image: File,
+    onSaveImage: () -> Unit,
     modifier: Modifier = Modifier) {
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -51,7 +52,7 @@ fun PhotoPreview(
             modifier = Modifier.fillMaxSize()
         )
 
-        TextFieldSaveImage({})
+        TextFieldSaveImage({onSaveImage()})
 
 
 
