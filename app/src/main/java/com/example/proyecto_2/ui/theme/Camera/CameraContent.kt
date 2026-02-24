@@ -42,25 +42,30 @@ fun CameraContent(
 
         if(photoFile != null){
             PhotoPreview(photoFile as File, {
-                SaveImgageToGallery(context, photoFile!!)
-
-            })
-        }else{
-
-            CameraPreview(context,imageCapture)
-            CameraBottonControls(
-                onTakePhoto = { TakePhoto(imageCapture,context,
-                    onTakenPhoto = {
-                    photoFile=it
+                SaveImgageToGallery(
+                    context,
+                    photoFile!!)
+                },
+                {
+                    photoFile = null
                 }
-                )},
-                modifier = Modifier.fillMaxWidth()
-                    .align(Alignment.BottomEnd),
-
-
-                )
-
+            )
+            return
         }
+
+
+        CameraPreview(context,imageCapture)
+        CameraBottonControls(
+            onTakePhoto = { TakePhoto(
+                imageCapture,
+                context,
+                onTakenPhoto = {
+                    photoFile=it
+                    }
+                )},
+            modifier = Modifier.fillMaxWidth()
+                    .align(Alignment.BottomEnd),
+            )
 
 
     }

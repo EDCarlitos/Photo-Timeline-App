@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,9 +44,11 @@ import java.io.File
 fun PhotoPreview(
     image: File,
     onSaveImage: () -> Unit,
+    onCancel: () -> Unit,
     modifier: Modifier = Modifier) {
 
     Box(modifier = modifier.fillMaxSize()) {
+
         AsyncImage(
             model = image,
             contentDescription = "Taked photo",
@@ -52,7 +56,29 @@ fun PhotoPreview(
             modifier = Modifier.fillMaxSize()
         )
 
-        TextFieldSaveImage({onSaveImage()})
+        IconButton(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .statusBarsPadding()
+                .padding(16.dp)
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(Color.Black.copy(0.6F)
+                ),
+            onClick = {onCancel()},
+        ) {
+            Icon(imageVector = Icons.Default.Close,
+                contentDescription = "Cancel Photo")
+        }
+
+
+        TextFieldSaveImage({
+            onSaveImage()
+            onCancel()
+        },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+        )
 
 
 
@@ -65,7 +91,7 @@ private fun TextFieldSaveImage(
     onSaveImage: () -> Unit,
     modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(
                 Brush.verticalGradient(
