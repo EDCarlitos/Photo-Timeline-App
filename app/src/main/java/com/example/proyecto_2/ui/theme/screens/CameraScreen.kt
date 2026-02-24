@@ -43,6 +43,8 @@ fun CameraScreen(modifier: Modifier = Modifier) {
         )
         if(permisionCheck != PackageManager.PERMISSION_GRANTED){
             camaraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }else{
+            hasPermission = true
         }
     }
 
