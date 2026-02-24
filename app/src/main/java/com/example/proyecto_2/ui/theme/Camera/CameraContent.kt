@@ -6,12 +6,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.proyecto_2.services.camera.TakePhoto
+import java.io.File
 
 @Composable
 fun CameraContent(
@@ -27,18 +31,34 @@ fun CameraContent(
 
         val context = LocalContext.current
 
+        //Photo File
+        var photoFile by
+            remember { mutableStateOf<File?>(null) }
+
         var imageCapture = remember {
-            ImageCapture.Builder().build();
+            ImageCapture.Builder().build()
         }
 
-        CameraPreview(context,imageCapture)
-        CameraBottonControls(
-            onTakePhoto = { TakePhoto(imageCapture,context) },
-            modifier = Modifier.fillMaxWidth()
-                .align(Alignment.BottomEnd),
+        if(photoFile != null){
+            PhotoPreview(photoFile as File)
+        }else{
+
+            CameraPreview(context,imageCapture)
+            CameraBottonControls(
+                onTakePhoto = { TakePhoto(imageCapture,context,
+                    onTakenPhoto = {
+                    photoFile=it
+                }
+                )},
+                modifier = Modifier.fillMaxWidth()
+                    .align(Alignment.BottomEnd),
 
 
-        )
+                )
+
+        }
+
+
     }
 }
 

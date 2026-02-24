@@ -60,7 +60,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     val lifecycle_version = "2.10.0"
-    val arch_version = "2.2.0"
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${lifecycle_version}")
 
@@ -75,4 +74,7 @@ dependencies {
 
     // ICONS
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
+
+    //Image coil
+    implementation("io.coil-kt:coil-compose:2.5.0")
 }
