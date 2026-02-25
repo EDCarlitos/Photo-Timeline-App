@@ -63,23 +63,26 @@ fun PhotoPreview(
                 .padding(16.dp)
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(Color.Black.copy(0.6F)
+                .background(
+                    Color.Black.copy(0.6F)
                 ),
-            onClick = {onCancel()},
+            onClick = { onCancel() },
         ) {
-            Icon(imageVector = Icons.Default.Close,
-                contentDescription = "Cancel Photo")
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Cancel Photo"
+            )
         }
 
 
-        TextFieldSaveImage({
-            onSaveImage()
-            onCancel()
-        },
+        TextFieldSaveImage(
+            {
+                onSaveImage()
+                onCancel()
+            },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
         )
-
 
 
 
