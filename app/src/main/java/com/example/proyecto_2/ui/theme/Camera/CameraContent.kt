@@ -1,5 +1,6 @@
 package com.example.proyecto_2.ui.theme.Camera
 
+import android.app.Application
 import androidx.camera.core.ImageCapture
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,23 +15,46 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.proyecto_2.database.Database
+import com.example.proyecto_2.database.DatabaseProvider
 import com.example.proyecto_2.services.camera.SaveImgageToGallery
 import com.example.proyecto_2.services.camera.TakePhoto
+import com.example.proyecto_2.viewModel.Camara.CameraViewModel
+import com.example.proyecto_2.viewModel.Camara.CameraViewModelFactory
 import java.io.File
 
 @Composable
 fun CameraContent(
     hasPermission: Boolean,
+    hasLocationPermission: Boolean,
     modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize()){
+
 
         if(!hasPermission) {
             Text("You cannot use the camera")
             return
         }
 
-
         val context = LocalContext.current
+        val application = context.applicationContext as Application
+
+        // Obtener la base de datos
+        val database = DatabaseProvider.getDatabase(context)
+
+        // Crear el factory
+        val factory = remember {
+            CameraViewModelFactory(
+                application,
+                database.photoDao()
+            )
+        }
+
+        // Crear el ViewModel usando el factory
+        val viewModel: CameraViewModel = viewModel(factory = factory)
+
+
 
         //Photo File
         var photoFile by
@@ -40,15 +64,20 @@ fun CameraContent(
             ImageCapture.Builder().build()
         }
 
+        var description by remember { mutableStateOf("")}
+
+
         if(photoFile != null){
             PhotoPreview(photoFile as File, {
-                SaveImgageToGallery(
-                    context,
-                    photoFile!!)
-                },
-                {
+                viewModel.onSaveImage(file = photoFile!!, description,hasLocationPermission)
+            },
+                onCancel = {
                     photoFile = null
-                }
+                },
+                onChangeDescription = {
+                    description = it
+                },
+                message = description
             )
             return
         }
@@ -75,5 +104,5 @@ fun CameraContent(
 @Preview
 @Composable
 private fun prev() {
-    CameraContent(true)
+    CameraContent(true, true)
 }

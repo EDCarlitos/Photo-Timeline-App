@@ -44,6 +44,8 @@ import java.io.File
 fun PhotoPreview(
     image: File,
     onSaveImage: () -> Unit,
+    onChangeDescription: (String) -> Unit,
+    message: String,
     onCancel: () -> Unit,
     modifier: Modifier = Modifier) {
 
@@ -80,8 +82,10 @@ fun PhotoPreview(
                 onSaveImage()
                 onCancel()
             },
+            onChangeDescription,
             modifier = Modifier
-                .align(Alignment.BottomEnd)
+                .align(Alignment.BottomEnd),
+            message = message
         )
 
 
@@ -92,6 +96,8 @@ fun PhotoPreview(
 @Composable
 private fun TextFieldSaveImage(
     onSaveImage: () -> Unit,
+    onChangeMessage: (message: String) -> Unit,
+    message: String,
     modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
@@ -105,11 +111,10 @@ private fun TextFieldSaveImage(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        var message by remember { mutableStateOf("") }
 
         OutlinedTextField(
             value = message,
-            onValueChange = { message = it },
+            onValueChange = onChangeMessage,
             placeholder = { Text("Agregar un mensaje...") },
             modifier = Modifier
                 .weight(1f)

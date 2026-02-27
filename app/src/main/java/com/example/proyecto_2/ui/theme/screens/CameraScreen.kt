@@ -21,34 +21,29 @@ import com.example.proyecto_2.ui.theme.Camera.CameraContent
 fun CameraScreen(modifier: Modifier = Modifier) {
     //Permissions
     var hasPermission by remember { mutableStateOf(false)};
+    var hasLocationPermission by remember { mutableStateOf(false) }
     //Context
     val context = LocalContext.current
     //Camera
-    val camaraPermissionLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if(it){
-                hasPermission = it
-            }else{
-                Toast.makeText(context, "No tenemos permiso para usar la camara",
-                    Toast.LENGTH_SHORT).show();
-            }
 
-        }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        hasPermission = permissions[Manifest.permission.CAMERA] ?: false
+        hasLocationPermission = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+    }
 
     LaunchedEffect(Unit) {
-        val permisionCheck = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.CAMERA
+        permissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
         )
-        if(permisionCheck != PackageManager.PERMISSION_GRANTED){
-            camaraPermissionLauncher.launch(Manifest.permission.CAMERA)
-        }else{
-            hasPermission = true
-        }
     }
 
 
-    CameraContent(hasPermission)
+    CameraContent(hasPermission, hasLocationPermission)
 
 
 

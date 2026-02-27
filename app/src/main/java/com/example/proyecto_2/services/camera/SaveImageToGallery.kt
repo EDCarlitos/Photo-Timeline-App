@@ -2,11 +2,12 @@ package com.example.proyecto_2.services.camera
 
 import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import java.io.File
 
-fun SaveImgageToGallery(context: Context, image: File){
+fun SaveImgageToGallery(context: Context, image: File): Uri? {
     val resolver = context.contentResolver
 
     val contentValues = ContentValues().apply {
@@ -30,6 +31,8 @@ fun SaveImgageToGallery(context: Context, image: File){
         contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
         resolver.update(uri, contentValues, null, null)
     }
+
+    return imageUri;
 
 
 }

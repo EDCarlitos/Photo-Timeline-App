@@ -11,6 +11,6 @@ data class PhotoWithAddress (
         parentColumn = "address_id",
         entityColumn = "id"
     )
-    val address: AddressEntity
+    val address: AddressEntity?
 
     )

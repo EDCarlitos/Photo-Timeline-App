@@ -6,8 +6,6 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import androidx.room.util.TableInfo
-import java.sql.Timestamp
 
 @Entity("photos",
     foreignKeys = [
@@ -18,7 +16,7 @@ import java.sql.Timestamp
             onDelete = CASCADE
         )
     ],
-    indices = [Index(value = ["addressId"], unique = true)]
+    indices = [Index(value = ["address_id"], unique = true)]
     )
 data class PhotoEntity (
 
@@ -29,10 +27,12 @@ data class PhotoEntity (
     val path: String,
 
     @ColumnInfo(name = "description")
-    val timestamp: Timestamp,
+    val description: String?,
+
+    val timestamp: Long,
 
     @ColumnInfo(name = "address_id")
-    val addressId: Int
+    val addressId: Long?
 
 
     )

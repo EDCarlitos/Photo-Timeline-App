@@ -13,7 +13,7 @@ interface PhotoDao {
     suspend fun getPhotosWithAdrress(): List<PhotoWithAddress>
 
     @Insert
-    suspend fun insertAddress(address: AddressEntity): Int
+    suspend fun insertAddress(address: AddressEntity): Long
 
     @Insert
     suspend fun insertPhoto(photo: PhotoEntity)
@@ -22,13 +22,19 @@ interface PhotoDao {
     @Transaction
     suspend fun insertAddressWithPhoto(address: AddressEntity, photo: PhotoEntity) {
         // 1. Insertamos la dirección y recuperamos el ID generado
-        val id = insertAddress(address)
+       var id: Long? = null;
+
+        if(address != null){
+            id = insertAddress(address)
+        }
 
         // 2. Creamos el objeto foto usando ese ID
-        val photo = PhotoEntity(
+        val photoEntity = PhotoEntity(
             path = photo.path,
             timestamp = photo.timestamp,
-            addressId = id
+            addressId = id,
+            id = null,
+            description = photo.description
         )
 
         // 3. Insertamos la foto
