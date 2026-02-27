@@ -91,5 +91,9 @@ dependencies {
 
     //Metadatos
     implementation("androidx.exifinterface:exifinterface:1.4.2")
-    
+    //Location
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    //INternet
+    implementation("org.osmdroid:osmdroid-android:6.1.16")
 }

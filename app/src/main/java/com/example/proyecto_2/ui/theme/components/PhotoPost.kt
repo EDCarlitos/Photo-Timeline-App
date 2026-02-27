@@ -1,5 +1,6 @@
 package com.example.proyecto_2.ui.theme.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import com.example.proyecto_2.models.camera.PhotoWithAddress
 
 @Composable
 fun PhotoPost(
+    onNavigate: () -> Unit,
     photoWithAddress: PhotoWithAddress,
     modifier: Modifier = Modifier) {
 
@@ -31,7 +33,10 @@ fun PhotoPost(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(12.dp)
+            .clickable{
+                onNavigate()
+            },
         elevation = CardDefaults.cardElevation(6.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -56,7 +61,7 @@ fun PhotoPost(
             // 📝 Descripción
             if (!photo.description.isNullOrEmpty()) {
                 Text(
-                    text = photo.description!!,
+                    text = photo.description,
                     style = MaterialTheme.typography.bodyLarge
                 )
 

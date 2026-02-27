@@ -12,6 +12,10 @@ interface PhotoDao {
     @Query("SELECT * FROM photos")
     suspend fun getPhotosWithAdrress(): List<PhotoWithAddress>
 
+
+    @Query(value = "SELECT * FROM photos WHERE id = :id ORDER BY id DESC" )
+    suspend fun getPhotoWithAddressById(id: Int): PhotoWithAddress
+
     @Insert
     suspend fun insertAddress(address: AddressEntity): Long
 
@@ -22,13 +26,9 @@ interface PhotoDao {
     @Transaction
     suspend fun insertAddressWithPhoto(address: AddressEntity, photo: PhotoEntity) {
         // 1. Insertamos la dirección y recuperamos el ID generado
-       var id: Long? = null;
+        val id = insertAddress(address)
 
-        if(address != null){
-            id = insertAddress(address)
-        }
-
-        // 2. Creamos el objeto foto usando ese ID
+        // 2. Creamos la foto con el ID de la dirección
         val photoEntity = PhotoEntity(
             path = photo.path,
             timestamp = photo.timestamp,
@@ -37,8 +37,8 @@ interface PhotoDao {
             description = photo.description
         )
 
-        // 3. Insertamos la foto
-        insertPhoto(photo)
+        // 3. Insertamos la foto correcta
+        insertPhoto(photoEntity)
     }
 
 

@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Proyecto_2" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Proyecto_2" parent="android:Theme.Material.Light.NoActionBar" >
+
+        <!-- Splash Screen Android 12+ -->
+        <item name="android:windowSplashScreenBackground">@color/splash_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/white</item>
+        <item name="android:windowSplashScreenAnimationDuration">500</item>
+
+
+    </style>
 </resources>

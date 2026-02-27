@@ -5,9 +5,10 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
+import com.example.proyecto_2.models.camera.FileData
 import java.io.File
 
-fun SaveImgageToGallery(context: Context, image: File): Uri? {
+fun SaveImgageToGallery(context: Context, image: File): FileData {
     val resolver = context.contentResolver
 
     val contentValues = ContentValues().apply {
@@ -32,7 +33,12 @@ fun SaveImgageToGallery(context: Context, image: File): Uri? {
         resolver.update(uri, contentValues, null, null)
     }
 
-    return imageUri;
+
+    return FileData(
+        imageUri!!,
+        null,
+        null
+    );
 
 
 }
