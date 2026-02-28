@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 
 class MapaScreenViewModel(app: Application) : AndroidViewModel(app) {
 
+
     private val photoDao = DatabaseProvider.getDatabase(app).photoDao()
 
     private val _photo = MutableStateFlow<PhotoWithAddress?>(null)

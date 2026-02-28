@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.proyecto_2.ui.theme.components.GoToMapsButton
 import com.example.proyecto_2.ui.theme.components.MapaView
 import com.example.proyecto_2.viewModel.Camara.MapaScreenViewModel
 
@@ -47,7 +48,6 @@ fun MapaScreen(idPhoto: Int, modifier: Modifier = Modifier) {
     if(photo == null)return
 
 
-    val context = LocalContext.current
 
     Box(modifier = modifier.fillMaxSize()) {
 
@@ -113,25 +113,14 @@ fun MapaScreen(idPhoto: Int, modifier: Modifier = Modifier) {
 
         // 📍 BOTÓN FLOTANTE
         if (photo!!.address != null) {
-            FloatingActionButton(
-                onClick = {
-
-                    val lat = photo!!.address!!.latitude
-                    val lng = photo!!.address!!.longitude
-
-
-                    val uri = Uri.parse("geo:$lat,$lng?q=$lat,$lng")
-                    val intent = Intent(Intent.ACTION_VIEW, uri)
-                    intent.setPackage("com.google.android.apps.maps")
-                    context.startActivity(intent)
-                },
+            GoToMapsButton(photo!!.address!!,
                 modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(24.dp)
-            ) {
-                Icon(Icons.Default.LocationOn, contentDescription = null)
-            }
+                .align(Alignment.BottomEnd)
+            )
         }
+
+
+
     }
 
 }
