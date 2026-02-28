@@ -15,13 +15,9 @@ import com.example.proyecto_2.models.camera.CameraMode
 import com.example.proyecto_2.models.camera.FileData
 import com.example.proyecto_2.models.camera.PhotoDao
 import com.example.proyecto_2.models.camera.PhotoEntity
-import com.example.proyecto_2.models.camera.PhotoWithAddress
 import com.example.proyecto_2.services.camera.SaveImgageToGallery
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
@@ -39,10 +35,6 @@ class CameraViewModel(
     var cameraMode by  mutableStateOf(CameraMode.PHOTO)
         private set
 
-    private val _photos = MutableStateFlow<List<PhotoWithAddress>>(emptyList())
-    val photos: StateFlow<List<PhotoWithAddress>> = _photos
-
-
 
 
 
@@ -59,12 +51,7 @@ class CameraViewModel(
     }
 
 
-    fun loadPhotos() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = photoDao.getPhotosWithAdrress()
-            _photos.value = result
-        }
-    }
+
     fun onSaveImage(file: File, description: String, hasLocationPermissons: Boolean ){
         viewModelScope.launch {
             val context = getApplication<Application>()

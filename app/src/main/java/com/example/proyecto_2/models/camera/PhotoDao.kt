@@ -9,11 +9,13 @@ import androidx.room.Transaction
 interface PhotoDao {
 
     @Transaction
-    @Query("SELECT * FROM photos")
+    @Query("SELECT * FROM photos ORDER BY id DESC")
     suspend fun getPhotosWithAdrress(): List<PhotoWithAddress>
 
 
-    @Query(value = "SELECT * FROM photos WHERE id = :id ORDER BY id DESC" )
+
+
+    @Query(value = "SELECT * FROM photos WHERE id = :id" )
     suspend fun getPhotoWithAddressById(id: Int): PhotoWithAddress
 
     @Insert

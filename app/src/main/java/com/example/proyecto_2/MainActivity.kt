@@ -25,7 +25,7 @@ import com.example.proyecto_2.ui.theme.screens.CameraScreen
 import com.example.proyecto_2.ui.theme.screens.GalleryScreen
 import com.example.proyecto_2.ui.theme.screens.HomeScreen
 import com.example.proyecto_2.ui.theme.screens.MapaScreen
-import com.example.proyecto_2.viewModel.Camara.NavigationViewModel
+import com.example.proyecto_2.viewModel.navigation.NavigationViewModel
 import org.osmdroid.config.Configuration
 
 class MainActivity : ComponentActivity() {
@@ -85,7 +85,7 @@ fun Proyecto_2App(navigationViewModel: NavigationViewModel = viewModel()) {
                         },
                     Modifier.padding(innerPadding))
                 }
-                AppDestinations.FAVORITES -> {
+                AppDestinations.CAMERA -> {
                     CameraScreen(Modifier.padding(innerPadding))
                 }
                 AppDestinations.PROFILE -> {
@@ -98,7 +98,11 @@ fun Proyecto_2App(navigationViewModel: NavigationViewModel = viewModel()) {
                             Modifier.padding(innerPadding)
                         )
                 }
+
+
             }
+
+
         }
 
     }
