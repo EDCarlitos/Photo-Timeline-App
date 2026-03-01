@@ -36,23 +36,23 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.proyecto_2.viewModel.Camara.TakePhotoViewModel
 import java.io.File
 
 
 @Composable
 fun PhotoPreview(
-    image: File,
-    onSaveImage: () -> Unit,
-    onChangeDescription: (String) -> Unit,
-    message: String,
-    onCancel: () -> Unit,
+    hasLocationPermissions: Boolean,
+    takePhotoViewModel: TakePhotoViewModel = viewModel(),
     modifier: Modifier = Modifier) {
+
 
     Box(modifier = modifier.fillMaxSize()) {
 
         AsyncImage(
-            model = image,
+            model = takePhotoViewModel.photoFile,
             contentDescription = "Taked photo",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -68,7 +68,7 @@ fun PhotoPreview(
                 .background(
                     Color.Black.copy(0.6F)
                 ),
-            onClick = { onCancel() },
+            onClick = { takePhotoViewModel.cancelPhoto()},
         ) {
             Icon(
                 imageVector = Icons.Default.Close,
@@ -79,13 +79,12 @@ fun PhotoPreview(
 
         TextFieldSaveImage(
             {
-                onSaveImage()
-                onCancel()
+                takePhotoViewModel.onSaveImage(hasLocationPermissions)
             },
-            onChangeDescription,
+            {message -> takePhotoViewModel.description = message},
             modifier = Modifier
                 .align(Alignment.BottomEnd),
-            message = message
+            message = takePhotoViewModel.description
         )
 
 

@@ -21,7 +21,7 @@ import com.example.proyecto_2.database.DatabaseProvider
 import com.example.proyecto_2.services.camera.SaveImgageToGallery
 import com.example.proyecto_2.services.camera.TakePhoto
 import com.example.proyecto_2.viewModel.Camara.CameraViewModel
-import com.example.proyecto_2.viewModel.Camara.CameraViewModelFactory
+import com.example.proyecto_2.viewModel.Camara.TakePhotoViewModel
 import java.io.File
 
 @Composable
@@ -31,56 +31,33 @@ fun CameraContent(
     modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize()){
 
+        val context = LocalContext.current
+
 
         if(!hasPermission) {
             Text("You cannot use the camera")
             return
         }
 
-        val context = LocalContext.current
-        val application = context.applicationContext as Application
-
-        // Obtener la base de datos
-        val database = DatabaseProvider.getDatabase(context)
-
-        // Crear el factory
-        val factory = remember {
-            CameraViewModelFactory(
-                application,
-                database.photoDao()
-            )
-        }
 
         // Crear el ViewModel usando el factory
-        val viewModel: CameraViewModel = viewModel(factory = factory)
-
+        val viewModel: CameraViewModel = viewModel();
+        val takePhotoViewModel: TakePhotoViewModel = viewModel();
 
 
         //Photo File
-        var photoFile by
-            remember { mutableStateOf<File?>(null) }
 
         var imageCapture = remember {
             ImageCapture.Builder().build()
         }
 
-        var description by remember { mutableStateOf("")}
 
 
-        if(photoFile != null){
-            PhotoPreview(photoFile as File, {
-                viewModel.onSaveImage(file = photoFile!!, description,hasLocationPermission)
-            },
-                onCancel = {
-                    photoFile = null
-                },
-                onChangeDescription = {
-                    description = it
-                },
-                message = description
-            )
+        if(takePhotoViewModel.photoFile != null){
+            PhotoPreview(hasLocationPermission)
             return
         }
+
 
 
         CameraPreview(context,imageCapture)
@@ -89,7 +66,7 @@ fun CameraContent(
                 imageCapture,
                 context,
                 onTakenPhoto = {
-                    photoFile=it
+                    takePhotoViewModel.photoFile = it
                     }
                 )},
             modifier = Modifier.fillMaxWidth()
