@@ -31,7 +31,7 @@ fun GoToMapsButton(
             intent.setPackage("com.google.android.apps.maps")
             context.startActivity(intent)
         },
-        modifier = Modifier
+        modifier = modifier
             .padding(24.dp)
     ) {
         Icon(Icons.Default.LocationOn, contentDescription = null)

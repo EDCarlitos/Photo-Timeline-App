@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.proyecto_2.ui.theme.screens
 
 import android.content.Intent
@@ -13,13 +15,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,9 +37,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.proyecto_2.models.navigation.AppDestinations
 import com.example.proyecto_2.ui.theme.components.GoToMapsButton
 import com.example.proyecto_2.ui.theme.components.MapaView
 import com.example.proyecto_2.viewModel.Camara.MapaScreenViewModel
+import com.example.proyecto_2.viewModel.navigation.NavigationViewModel
 
 @Composable
 fun MapaScreen(idPhoto: Int, modifier: Modifier = Modifier) {
@@ -41,11 +49,13 @@ fun MapaScreen(idPhoto: Int, modifier: Modifier = Modifier) {
     val viewmodel: MapaScreenViewModel = viewModel()
     val photo by viewmodel.photo.collectAsState()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(idPhoto) {
         viewmodel.getPhoto(idPhoto)
     }
 
     if(photo == null)return
+
+
 
 
 
@@ -56,6 +66,9 @@ fun MapaScreen(idPhoto: Int, modifier: Modifier = Modifier) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
+
+            TopBar()
+
 
             // 🖼 IMAGEN PRINCIPAL
             AsyncImage(
@@ -73,6 +86,7 @@ fun MapaScreen(idPhoto: Int, modifier: Modifier = Modifier) {
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
+
 
                 Text(
                     text = photo!!.photo.description!!,
@@ -123,4 +137,26 @@ fun MapaScreen(idPhoto: Int, modifier: Modifier = Modifier) {
 
     }
 
+}
+
+
+@Composable
+fun TopBar(
+    viewModel: NavigationViewModel = viewModel(),
+    modifier: Modifier = Modifier) {
+    TopAppBar(
+        title = {
+            Text("Photo")
+        },
+        navigationIcon = {
+            IconButton(
+                onClick = {viewModel.navigate(AppDestinations.HOME)}
+            ){
+                Icon(
+                    imageVector = Icons.Default.ArrowBackIosNew,
+                    contentDescription = "Back home",
+                )
+            }
+        },
+    )
 }

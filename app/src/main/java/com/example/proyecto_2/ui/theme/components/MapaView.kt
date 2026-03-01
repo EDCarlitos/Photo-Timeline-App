@@ -13,31 +13,37 @@ import org.osmdroid.views.overlay.Marker
 fun MapaView(
     address: AddressEntity,
     modifier: Modifier = Modifier) {
-    AndroidView(
-        modifier = Modifier.fillMaxSize(),
-        factory = { context ->
 
-            val mapView = MapView(context)
-            mapView.setMultiTouchControls(true)
+    AndroidView(
+        modifier = modifier.fillMaxSize(),
+        factory = { context ->
+            MapView(context).apply {
+                setMultiTouchControls(true)
+            }
+        },
+        update = { mapView ->
 
             val punto = GeoPoint(
                 address.latitude,
-                address.longitude)
+                address.longitude
+            )
 
             mapView.controller.setZoom(16.0)
             mapView.controller.setCenter(punto)
 
-            val marker = Marker(mapView)
-            marker.position = punto
-            marker.setAnchor(
-                Marker.ANCHOR_CENTER,
-                Marker.ANCHOR_BOTTOM
-            )
-            marker.title = "Ubicación"
+            mapView.overlays.clear() // 🔥 IMPORTANTE limpiar overlays
+
+            val marker = Marker(mapView).apply {
+                position = punto
+                setAnchor(
+                    Marker.ANCHOR_CENTER,
+                    Marker.ANCHOR_BOTTOM
+                )
+                title = "Ubicación"
+            }
 
             mapView.overlays.add(marker)
-
-            mapView
+            mapView.invalidate()
         }
     )
 }
