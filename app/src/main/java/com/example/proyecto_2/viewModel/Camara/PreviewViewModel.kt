@@ -1,12 +1,9 @@
 package com.example.proyecto_2.viewModel.Camara
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.location.Location
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,14 +13,12 @@ import com.example.proyecto_2.models.camera.FileData
 import com.example.proyecto_2.models.camera.PhotoDao
 import com.example.proyecto_2.models.camera.PhotoEntity
 import com.example.proyecto_2.services.camera.SaveImgageToGallery
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.example.proyecto_2.services.camera.awaitLastLocation
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
-import kotlin.coroutines.resume
 
-class TakePhotoViewModel(app: Application): AndroidViewModel(app) {
+class PreviewViewModel(app: Application): AndroidViewModel(app) {
 
 
     val photoDao: PhotoDao = DatabaseProvider.getDatabase(app).photoDao();
@@ -61,17 +56,6 @@ class TakePhotoViewModel(app: Application): AndroidViewModel(app) {
         }
     }
 
-    @SuppressLint("MissingPermission")
-    suspend fun FusedLocationProviderClient.awaitLastLocation(): Location? =
-        suspendCancellableCoroutine { cont ->
-            lastLocation
-                .addOnSuccessListener { location ->
-                    cont.resume(location)
-                }
-                .addOnFailureListener {
-                    cont.resume(null)
-                }
-        }
     private suspend fun onSaveImageDb(file: FileData, description: String, hasLocationPermissons: Boolean, context: Context){
 
 
