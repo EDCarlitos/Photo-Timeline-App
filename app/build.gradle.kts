@@ -82,8 +82,6 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
 
     //Image coil
-    implementation("io.coil-kt:coil-compose:2.5.0")
-
     //Room Database
     val room_version = "2.8.4"
 
@@ -99,4 +97,12 @@ dependencies {
 
     //INternet
     implementation("org.osmdroid:osmdroid-android:6.1.16")
+
+    //Coil extract a part of video
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("io.coil-kt:coil-video:2.6.0")
+
+
+    implementation("androidx.media3:media3-exoplayer:1.3.1")
+    implementation("androidx.media3:media3-ui:1.3.1")
 }

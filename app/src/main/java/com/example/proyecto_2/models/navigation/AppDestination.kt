@@ -14,7 +14,7 @@ enum class AppDestinations(
 ) {
     HOME("Home", Icons.Default.Home),
     CAMERA("Camera", Icons.Default.Camera),
-    PROFILE("Profile", Icons.Default.AccountBox),
+PROFILE("Profile", Icons.Default.AccountBox, hidden = true),
     MAP(label = "Maps", Icons.Default.Map, true)
 }
 

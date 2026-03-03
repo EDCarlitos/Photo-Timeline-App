@@ -12,16 +12,21 @@ import com.example.proyecto_2.models.camera.AddressEntity
 import com.example.proyecto_2.models.camera.FileData
 import com.example.proyecto_2.models.camera.PhotoDao
 import com.example.proyecto_2.models.camera.PhotoEntity
+import com.example.proyecto_2.services.camera.SaveImageToDb
 import com.example.proyecto_2.services.camera.SaveImgageToGallery
 import com.example.proyecto_2.services.camera.awaitLastLocation
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
 import java.io.File
 
-class PreviewViewModel(app: Application): AndroidViewModel(app) {
+class PreviewViewModel(app: Application,
+    ): AndroidViewModel(app) {
 
 
-    val photoDao: PhotoDao = DatabaseProvider.getDatabase(app).photoDao();
+    private val photoDao = DatabaseProvider.getDatabase(app).photoDao()
+    private val saveImage = SaveImageToDb(photoDao)
+
+
     var photoFile by mutableStateOf<File?>(null)
     var description by mutableStateOf("")
 
@@ -49,48 +54,14 @@ class PreviewViewModel(app: Application): AndroidViewModel(app) {
             saveUri.lng = longitude
             saveUri.lat = latitude
 
-            onSaveImageDb(saveUri ,description ,hasLocationPermissons,context)
+             saveImage.onSaveImageDb(saveUri ,description ,hasLocationPermissons,context)
             photoFile = null
             description = ""
 
         }
     }
 
-    private suspend fun onSaveImageDb(file: FileData, description: String, hasLocationPermissons: Boolean, context: Context){
 
-
-        if (file.lat != null && file.lng != null) {
-
-
-            val address = AddressEntity(
-                latitude = file.lat!!,
-                longitude = file.lng!!,
-                addressText = "",
-                timestamp = System.currentTimeMillis(),
-                id = null
-            )
-
-            val photo = PhotoEntity(
-                path = file.uri.toString(),
-                description = description,
-                timestamp = System.currentTimeMillis(),
-                addressId = null
-            )
-
-            photoDao.insertAddressWithPhoto(address, photo)
-
-        } else {
-            // Si no hay metadata GPS
-            val photo = PhotoEntity(
-                path = file.uri.toString(),
-                description = description,
-                timestamp = System.currentTimeMillis(),
-                addressId = null
-            )
-
-            photoDao.insertPhoto(photo)
-        }
-    }
 
 
 

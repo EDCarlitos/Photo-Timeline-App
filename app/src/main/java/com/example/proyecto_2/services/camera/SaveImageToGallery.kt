@@ -8,38 +8,49 @@ import android.provider.MediaStore
 import com.example.proyecto_2.models.camera.FileData
 import java.io.File
 
-fun SaveImgageToGallery(context: Context, image: File): FileData {
+fun SaveImgageToGallery(context: Context, file: File): FileData {
+
     val resolver = context.contentResolver
 
+    val isVideo = file.extension.lowercase() in listOf("mp4", "mov", "mkv")
+
+    val collection = if (isVideo) {
+        MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+    } else {
+        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+    }
+
+    val mimeType = if (isVideo) {
+        "video/${file.extension.lowercase()}"
+    } else {
+        "image/${file.extension.lowercase()}"
+    }
+
+    val relativePath = if (isVideo) {
+        Environment.DIRECTORY_MOVIES + "/MiApp"
+    } else {
+        Environment.DIRECTORY_PICTURES + "/MiApp"
+    }
+
     val contentValues = ContentValues().apply {
-        put(MediaStore.Images.Media.DISPLAY_NAME, image.name)
-        put(MediaStore.Images.Media.MIME_TYPE, "image/jpg")
-        put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/MiApp")
-        put(MediaStore.Images.Media.IS_PENDING, 1)
+        put(MediaStore.MediaColumns.DISPLAY_NAME, file.name)
+        put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+        put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
+        put(MediaStore.MediaColumns.IS_PENDING, 1)
     }
 
-    var imageUri = resolver.insert(
-        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-        contentValues
-    )
+    val fileUri = resolver.insert(collection, contentValues)
+        ?: throw Exception("No se pudo crear el URI")
 
-    imageUri?.let { uri ->
-        resolver.openOutputStream(uri)?.use { outputStream ->
-            image.inputStream().use { inputStream -> inputStream.copyTo(outputStream) }
+    resolver.openOutputStream(fileUri)?.use { outputStream ->
+        file.inputStream().use { inputStream ->
+            inputStream.copyTo(outputStream)
         }
-
-        contentValues.clear()
-        contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
-        resolver.update(uri, contentValues, null, null)
     }
 
+    contentValues.clear()
+    contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
+    resolver.update(fileUri, contentValues, null, null)
 
-    return FileData(
-        imageUri!!,
-        null,
-        null
-    );
-
-
+    return FileData(fileUri, null, null)
 }
-

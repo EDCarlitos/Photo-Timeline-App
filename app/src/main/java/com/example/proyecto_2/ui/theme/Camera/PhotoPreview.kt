@@ -31,12 +31,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.proyecto_2.models.camera.CameraMode
+import com.example.proyecto_2.viewModel.Camara.CameraViewModel
 import com.example.proyecto_2.viewModel.Camara.PreviewViewModel
 
 
 @Composable
 fun PhotoPreview(
     hasLocationPermissions: Boolean,
+    cameraViewModel: CameraViewModel = viewModel(),
     takePhotoViewModel: PreviewViewModel = viewModel(),
     modifier: Modifier = Modifier) {
 
@@ -81,7 +84,7 @@ fun PhotoPreview(
 
         TextFieldSaveImage(
             {
-                takePhotoViewModel.onSaveImage(hasLocationPermissions)
+                    takePhotoViewModel.onSaveImage(hasLocationPermissions)
             },
             {message -> takePhotoViewModel.description = message},
             modifier = Modifier

@@ -4,9 +4,13 @@ package com.example.proyecto_2.ui.theme.screens
 
 import android.content.Intent
 import android.net.Uri
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,18 +28,27 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
 import com.example.proyecto_2.models.navigation.AppDestinations
 import com.example.proyecto_2.ui.theme.components.GoToMapsButton
@@ -44,101 +57,107 @@ import com.example.proyecto_2.viewModel.Camara.MapaScreenViewModel
 import com.example.proyecto_2.viewModel.navigation.NavigationViewModel
 
 @Composable
-fun MapaScreen(idPhoto: Int, modifier: Modifier = Modifier) {
+fun MapaScreen(
+    idPhoto: Int,
+    modifier: Modifier = Modifier
+) {
 
     val viewmodel: MapaScreenViewModel = viewModel()
-    val photo by viewmodel.photo.collectAsState()
+    val photoWithAddress by viewmodel.photo.collectAsState()
 
     LaunchedEffect(idPhoto) {
         viewmodel.getPhoto(idPhoto)
     }
 
-    if(photo == null)return
+    if (photoWithAddress == null) return
 
+    val photo = photoWithAddress!!.photo
+    val address = photoWithAddress!!.address
 
+    val context = LocalContext.current
+    val uri = remember(photo.path) { Uri.parse(photo.path) }
 
+    val isVideo = remember(photo.path) {
+        context.contentResolver.getType(uri)?.startsWith("video") == true
+    }
 
-
-    Box(modifier = modifier.fillMaxSize()) {
+    Scaffold (
+        topBar = {
+            TopBar()
+        }
+    ) { innerPadding ->
 
         Column(
-            modifier = Modifier
+            verticalArrangement = Arrangement.Top,
+            modifier = modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .padding(innerPadding),
+
         ) {
 
-            TopBar()
-
-
-            // 🖼 IMAGEN PRINCIPAL
-            AsyncImage(
-                model = photo!!.photo.path,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
+            // 🎬 VIDEO / IMAGEN (60%)
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(400.dp)
-            )
-
-            // 📄 INFORMACIÓN
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                    .weight(3f)
+                    .aspectRatio(16f / 9f) // 🔥 mantiene proporción real
             ) {
+                if (isVideo) {
 
+                    val player = remember(photo.path) {
+                        ExoPlayer.Builder(context).build().apply {
+                            setMediaItem(MediaItem.fromUri(uri))
+                            prepare()
+                            playWhenReady = true
+                        }
+                    }
 
-                Text(
-                    text = photo!!.photo.description!!,
-                    style = MaterialTheme.typography.titleMedium
-                )
+                    DisposableEffect(Unit) {
+                        onDispose { player.release() }
+                    }
 
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 🗺 MAPA EN CARD
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(280.dp)
-                    .padding(horizontal = 16.dp),
-                shape = RoundedCornerShape(20.dp),
-                elevation = CardDefaults.cardElevation(8.dp)
-            ) {
-
-                if (photo!!.address != null) {
-
-                    MapaView(photo!!.address!!)
+                    AndroidView(
+                        factory = { ctx ->
+                            PlayerView(ctx).apply {
+                                this.player = player
+                                useController = true
+                                resizeMode =
+                                    AspectRatioFrameLayout.RESIZE_MODE_FIT
+                            }
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    )
 
                 } else {
 
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("No hay ubicación disponible")
-                    }
+                    AsyncImage(
+                        model = uri,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
-        }
-
-        // 📍 BOTÓN FLOTANTE
-        if (photo!!.address != null) {
-            GoToMapsButton(photo!!.address!!,
+            // 🗺 MAPA (40%)
+            Box(
                 modifier = Modifier
-                .align(Alignment.BottomEnd)
-            )
+                    .fillMaxWidth()
+                    .weight(2f)
+                    .padding(16.dp)
+            ) {
+                Card(
+                    modifier = Modifier.fillMaxSize(),
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    if (address != null) {
+                        MapaView(address)
+                    }
+                }
+            }
         }
-
-
-
     }
-
 }
-
 
 @Composable
 fun TopBar(

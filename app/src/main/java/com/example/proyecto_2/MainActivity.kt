@@ -19,6 +19,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.Coil
+import coil.ImageLoader
+import coil.decode.VideoFrameDecoder
 import com.example.proyecto_2.models.navigation.AppDestinations
 import com.example.proyecto_2.ui.theme.Proyecto_2Theme
 import com.example.proyecto_2.ui.theme.screens.CameraScreen
@@ -36,6 +39,14 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             PreferenceManager.getDefaultSharedPreferences(applicationContext)
         )
+
+        val imageLoader = ImageLoader.Builder(this)
+            .components {
+                add(VideoFrameDecoder.Factory())
+            }
+            .build()
+
+        Coil.setImageLoader(imageLoader)
 
         Configuration.getInstance().userAgentValue = packageName
 

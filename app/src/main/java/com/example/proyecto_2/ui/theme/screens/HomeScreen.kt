@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -27,7 +29,7 @@ fun HomeScreen(
     }
 
     val photos by viewModel.photos.collectAsState()
-
+    var currentlyPlayingId by mutableStateOf<Int?>(null)
 
 
 
@@ -38,12 +40,14 @@ fun HomeScreen(
 
 
         items(photos) { item ->
-            PhotoPost(photoWithAddress = item, onNavigate = {
-
-                onNavigateToMap(
-                    item.photo.id!!
-                )
-            })
+            PhotoPost(
+                onNavigate = { onNavigateToMap(item.photo.id!!)},
+                photoWithAddress = item,
+                currentlyPlayingId = currentlyPlayingId,
+                onStartPlaying = { id ->
+                    currentlyPlayingId = id
+                }
+            )
 
         }
     }
