@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -127,7 +128,8 @@ private fun TextFieldSaveImage(
             colors = OutlinedTextFieldDefaults
                 .colors(
                     unfocusedContainerColor = Color.White,
-                    focusedContainerColor = Color.White
+                    focusedContainerColor = Color.White,
+                    focusedTextColor = Color.Black
                 )
         )
 
@@ -143,7 +145,7 @@ private fun TextFieldSaveImage(
             onClick = {onSaveImage()},
         ) {
             Icon(
-                imageVector = Icons.Default.AddAPhoto,
+                imageVector = Icons.Default.Send,
                 contentDescription = "Enviar",
                 tint = Color.White
             )

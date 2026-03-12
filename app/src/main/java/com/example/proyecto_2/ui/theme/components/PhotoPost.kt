@@ -1,11 +1,14 @@
 package com.example.proyecto_2.ui.theme.components
 
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,10 +25,14 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,15 +61,18 @@ import java.io.File
 
 @Composable
 fun PhotoPost(
-    onNavigate: ()->Unit,
+    onNavigate: () -> Unit,
     photoWithAddress: PhotoWithAddress,
     currentlyPlayingId: Int?,
     onStartPlaying: (Int?) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     val context = LocalContext.current
     val photo = photoWithAddress.photo
     val uri = Uri.parse(photo.path)
+
+    var expanded by remember { mutableStateOf(false) }
 
     val isVideo = remember(photo.path) {
         context.contentResolver.getType(uri)?.startsWith("video") == true
@@ -70,7 +80,6 @@ fun PhotoPost(
 
     val isPlaying = currentlyPlayingId == photo.id
 
-    // 🔥 Player correcto (se recrea solo si cambia el video)
     val player = remember(photo.path) {
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(uri))
@@ -79,7 +88,6 @@ fun PhotoPost(
         }
     }
 
-    // 🔥 Control reproducción
     LaunchedEffect(isPlaying) {
         if (isPlaying) {
             player.seekTo(0)
@@ -104,6 +112,7 @@ fun PhotoPost(
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .animateContentSize()
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = {
@@ -111,7 +120,7 @@ fun PhotoPost(
                             onStartPlaying(photo.id)
                         }
                     },
-                    onTap = {onNavigate()}
+                    onTap = { onNavigate() }
                 )
             },
         shape = RoundedCornerShape(20.dp)
@@ -150,12 +159,53 @@ fun PhotoPost(
                 }
             }
 
-            if (!photo.description.isNullOrBlank()) {
-                Text(
-                    text = photo.description,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(16.dp)
-                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        text = photo.description ?: "Sin descripción",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    if (photoWithAddress.address != null) {
+
+                        TextButton(
+                            onClick = {
+                                expanded = !expanded
+                            }
+                        ) {
+                            Text(
+                                if (expanded) "Ocultar mapa" else "Ver mapa"
+                            )
+                        }
+                    }
+                }
+
+            AnimatedVisibility (
+                visible = expanded && photoWithAddress.address != null
+            ) {
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(220.dp)
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                ) {
+
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+
+                        MapaView(photoWithAddress.address!!)
+                    }
+                }
             }
         }
     }

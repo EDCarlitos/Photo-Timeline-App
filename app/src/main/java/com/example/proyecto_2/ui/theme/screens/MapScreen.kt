@@ -2,29 +2,19 @@
 
 package com.example.proyecto_2.ui.theme.screens
 
-import android.content.Intent
 import android.net.Uri
-import android.view.ViewGroup
-import android.widget.FrameLayout
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -44,8 +34,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
@@ -56,6 +46,7 @@ import com.example.proyecto_2.ui.theme.components.MapaView
 import com.example.proyecto_2.viewModel.Camara.MapaScreenViewModel
 import com.example.proyecto_2.viewModel.navigation.NavigationViewModel
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 fun MapaScreen(
     idPhoto: Int,
@@ -81,79 +72,94 @@ fun MapaScreen(
         context.contentResolver.getType(uri)?.startsWith("video") == true
     }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopBar()
-        }
+        },
+        contentColor = MaterialTheme.colorScheme.tertiary,
+        modifier = Modifier.background(MaterialTheme.colorScheme.tertiary)
     ) { innerPadding ->
 
-        Column(
-            verticalArrangement = Arrangement.Top,
-            modifier = modifier
+        Box(
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.tertiary)
         ) {
 
-            // 🎬 VIDEO / IMAGEN (60%)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(3f)
-                    .aspectRatio(16f / 9f) // 🔥 mantiene proporción real
+            Column(
+                verticalArrangement = Arrangement.Top,
+                modifier = modifier.fillMaxSize()
             ) {
-                if (isVideo) {
 
-                    val player = remember(photo.path) {
-                        ExoPlayer.Builder(context).build().apply {
-                            setMediaItem(MediaItem.fromUri(uri))
-                            prepare()
-                            playWhenReady = true
+                // 🎬 VIDEO / IMAGEN (60%)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(4f)
+                ) {
+                    if (isVideo) {
+
+                        val player = remember(photo.path) {
+                            ExoPlayer.Builder(context).build().apply {
+                                setMediaItem(MediaItem.fromUri(uri))
+                                prepare()
+                                playWhenReady = true
+                            }
+                        }
+
+                        DisposableEffect(Unit) {
+                            onDispose { player.release() }
+                        }
+
+                        AndroidView(
+                            factory = { ctx ->
+                                PlayerView(ctx).apply {
+                                    this.player = player
+                                    useController = true
+                                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                                }
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                    } else {
+
+                        AsyncImage(
+                            model = uri,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
+
+                // 🗺 MAPA (40%)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(2f)
+                        .padding(16.dp)
+                ) {
+                    Card(
+                        modifier = Modifier.fillMaxSize(),
+                        shape = RoundedCornerShape(20.dp)
+                    ) {
+                        if (address != null) {
+                            MapaView(address)
                         }
                     }
-
-                    DisposableEffect(Unit) {
-                        onDispose { player.release() }
-                    }
-
-                    AndroidView(
-                        factory = { ctx ->
-                            PlayerView(ctx).apply {
-                                this.player = player
-                                useController = true
-                                resizeMode =
-                                    AspectRatioFrameLayout.RESIZE_MODE_FIT
-                            }
-                        },
-                        modifier = Modifier.fillMaxSize()
-                    )
-
-                } else {
-
-                    AsyncImage(
-                        model = uri,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
                 }
             }
 
-            // 🗺 MAPA (40%)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(2f)
-                    .padding(16.dp)
-            ) {
-                Card(
-                    modifier = Modifier.fillMaxSize(),
-                    shape = RoundedCornerShape(20.dp)
-                ) {
-                    if (address != null) {
-                        MapaView(address)
-                    }
-                }
+            // BOTÓN FLOTANTE
+            if (photoWithAddress!!.address != null) {
+                GoToMapsButton(
+                    photoWithAddress!!.address!!,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp)
+                )
             }
         }
     }

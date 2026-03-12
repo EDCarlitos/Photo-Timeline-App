@@ -1,9 +1,12 @@
 package com.example.proyecto_2.ui.theme.screens
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -11,11 +14,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyecto_2.ui.theme.components.PhotoPost
 import com.example.proyecto_2.viewModel.PhotosViewModel
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun HomeScreen(
     onNavigateToMap: (Int)-> Unit,
@@ -34,7 +39,7 @@ fun HomeScreen(
 
 
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.tertiary),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
 
