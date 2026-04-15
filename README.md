@@ -45,8 +45,7 @@ Pantalla principal para capturar contenido.
 
 **Screenshots:**
 
-![Camera](./imagenes/camara.png)
-![Video Mode](./imagenes/video.png)
+<img src="./imagenes/camara.png" width="250"/> <img src="./imagenes/video.png" width="250"/>
 
 ---
 
@@ -63,8 +62,7 @@ Pantalla donde se muestran todas las fotos tomadas en forma de lista cronológic
 
 **Screenshots:**
 
-![Lista de fotos](./imagenes/lista_fotos.png)
-![Ver mapa desde lista](./imagenes/photo_ver_mapa.png)
+<img src="./imagenes/lista_fotos.png" width="250"/> <img src="./imagenes/photo_ver_mapa.png" width="250"/>
 
 ---
 
@@ -81,8 +79,7 @@ Pantalla de detalle de cada imagen.
 
 **Screenshots:**
 
-![Foto tomada](./imagenes/foto_tomada.png)
-![Detalles con mapa](./imagenes/photo_details.png)
+<img src="./imagenes/foto_tomada.png" width="250"/> <img src="./imagenes/photo_details.png" width="250"/>
 
 ---
 
@@ -92,7 +89,7 @@ Pantalla / popup donde el usuario acepta los permisos necesarios.
 
 **Screenshot:**
 
-![Permisos](./imagenes/permisos.png)
+<img src="./imagenes/permisos.png" width="250"/>
 
 ---
 
@@ -130,12 +127,7 @@ Pantalla / popup donde el usuario acepta los permisos necesarios.
 
 ## 👨‍💻 Autor
 
-Desarrollado por [Tu Nombre]
+Desarrollado por EDCarlitos
 
----
-
-## 📄 Licencia
-
-Uso educativo / personal.
 
 ---
