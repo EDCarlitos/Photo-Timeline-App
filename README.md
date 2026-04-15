@@ -106,7 +106,7 @@ Pantalla / popup donde el usuario acepta los permisos necesarios.
 1. Clona el repositorio:
 
    ```bash
-   git clone https://github.com/tu-usuario/Photo-Timeline-App.git
+   git clone https://github.com/EDCarlitos/Photo-Timeline-App.git
    ```
 
 2. Abre el proyecto en Android Studio
